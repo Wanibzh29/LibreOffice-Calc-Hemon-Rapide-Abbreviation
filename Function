@@ -1,0 +1,70 @@
+'====================================================================
+' Nom de la fonction : AbreviationHemonRapide
+' Catégorie : Personnalisée / Histoire du breton
+' Description :
+'   Génère l'abréviation d'un titre selon Hemon et gère les réimpressions.
+'   Parcourt les lignes de la colonne A jusqu'à la première cellule vide.
+'   - Colonne A : titre
+'   - Colonne B : année
+'   - Colonne C : abréviation générée
+'   - Colonne D : option "R" pour réimpression à l'identique
+'
+' Retour :
+'   (String) – "OK" lorsque le traitement est terminé.
+'====================================================================
+
+Public Function AbreviationHemonRapide() As String
+    Dim oSheet As Object
+    Dim i As Long
+    Dim titre As String, annee As Variant, reimpression As String
+    Dim nbLettres As Integer, abreviation As String
+
+    oSheet = ThisComponent.Sheets(0)
+    i = 0
+
+    Do While Trim(oSheet.getCellByPosition(0, i).String) <> ""
+        titre = Trim(oSheet.getCellByPosition(0, i).String)
+        annee = oSheet.getCellByPosition(1, i).Value
+        reimpression = UCase(Trim(oSheet.getCellByPosition(3, i).String))
+
+        ' Déterminer le nombre de lettres selon la période
+        If IsNumeric(annee) Then
+            Select Case True
+                Case annee < 1100
+                    nbLettres = 0
+                Case annee <= 1650
+                    nbLettres = 1
+                Case annee <= 1800
+                    nbLettres = 2
+                Case annee <= 1899
+                    nbLettres = 3
+                Case annee <= 1999
+                    nbLettres = 4
+                Case Else
+                    nbLettres = 5
+            End Select
+        Else
+            nbLettres = 0
+        End If
+
+        ' Créer l'abréviation
+        If nbLettres = 0 Then
+            abreviation = "(vBr)"
+        Else
+            abreviation = UCase(Left(titre, nbLettres))
+        End If
+
+        ' Ajouter suffixe pour réimpression
+        If reimpression = "R" Then
+            abreviation = abreviation & "r"
+        End If
+
+        ' Écrire dans la colonne C
+        oSheet.getCellByPosition(2, i).String = abreviation
+
+        i = i + 1
+    Loop
+
+    AbreviationHemonRapide = "OK"
+    MsgBox "Abréviations générées avec succès !", 64, "Info"
+End Function
