@@ -1,4 +1,4 @@
-# Hemon-Rapide-Abbreviation
+# Roparz Hemon Rapide Abbreviation
 Generates the abbreviation of a book title according to the Roparz Hemon method and manages reprints.
 
 ## I. Licences
